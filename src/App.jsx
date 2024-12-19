@@ -22,21 +22,22 @@ function App() {
   //  isBought === true인 것들의 목록
   const boughtItems = itemList.filter((item) => item.isBought);
 
-  // 새 아이템 추가
+  //  새 아이템 추가
   const addNewItem = (name) => {
-    // id 생성 -> id의 최댓값 +1
+    //  id 생성 -> id의 최댓값 + 1
     const newId =
       itemList.length > 0
         ? Math.max(...itemList.map((item) => item.id)) + 1
         : 1;
-    // 객체 생성
-    // 속성이 key이름과 값 이름이 같을 때 -> 줄여쓸 수 있음
-    // ex) name: name => name
+    //  객체 생성
+    //  속성이 key이름과 값 이름이 같을 때 -> 줄여쓸 수 있다.
+    //  name: name => name
     const newItem = { id: newId, name, isBought: false };
-    // itemList에 새 아이템 추가
+    //  itemList에 새 아이템 추가
     const newItemList = [...itemList, newItem];
     setItemList(newItemList);
   };
+
   //  id => isBought를 true <-> false
   const toggleBought = (id) => {
     const newItemList = itemList.map((item) =>
