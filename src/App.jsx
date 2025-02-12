@@ -7,7 +7,14 @@ import BoughtList from "./components/BoughtList";
 import CartFooter from "./components/CartFooter";
 
 function App() {
-  const apiUrl = "http://localhost:3000/shoplist";
+  // const apiUrl = "http://localhost:1337/shoplist";
+  // const apiUrl = "http://localhost:3000/shoplist";
+  // const apiUrl = "http://localhost:8088/api/shoplist";
+
+  //  .env로부터 환경 변수를 불러올 때
+  //  - CREATE-REACT-APP에서는 process.env.REACT_APP_ 환경변수
+  //  - VITE에서는 import.meta.env.VITE_ 환경 변수를 읽을 수있다
+  const apiUrl = `http://${import.meta.env.VITE_API_HOST}:18088/api/shoplist`;
   //  서버로부터 API 호출해서 쇼핑 목록 받아오기
   // const [itemList, setItemList] = useState([
   //   { id: 1, name: "무", isBought: false },
@@ -46,6 +53,7 @@ function App() {
       setIsLoading(false); //  로딩이 끝남
     }
   };
+
   useEffect(() => {
     fetchItems();
   }, []); //  -> 컴포넌트가 처음 로딩되었을 때의 이펙트 발생
@@ -65,45 +73,48 @@ function App() {
     //  name: name => name
     const newItem = { id: newId, name, isBought: false };
     //  itemList에 새 아이템 추가
-    // const newItemList = [...itemList, newItem];
-    // setItemList(newItemList);
+    // const newItemList = [...itemL
 
-    // -> REST 서버로 POST 호출 -> CREATE
+    //  -> REST 서버에 POST 호출 -> CREATE
     try {
-      const reponse = await fetch(apiUrl, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newItem),
       });
-      // 요청 결과 확인
-      if (!reponse.ok) {
+      //  요청 결과 확인
+      if (!response.ok) {
         throw new Error("새 아이템을 추가하지 못했습니다.");
-      } // 성공한것
-      // 리스트 갱신
+      }
+      //  리스트 갱신
       fetchItems();
     } catch (err) {
-      setError(err.massage);
+      setError(err.message);
     }
   };
 
   //  id => isBought를 true <-> false
   const toggleBought = async (id) => {
-    // const newItemList = itemList.map((item) =>
-    //   item.id === id ? { ...item, isBought: !item.isBought } : item
-    // );
-    // setItemList(newItemList);
-    // id로 아이템을 찾아서 해당 아이템의 isBought 값을 반전 true <-> false
+    /*
+    const newItemList = itemList.map((item) =>
+      item.id === id ? { ...item, isBought: !item.isBought } 
+                        : item
+    );
+    setItemList(newItemList);
+    */
+    //  id로 아이템을 찾아서
+    //  해당 아이템의 isBought 값을 반전 true <-> false
     const updatedItem = itemList.find((item) => item.id === id);
     updatedItem.isBought = !updatedItem.isBought;
-    // 서버에 UPDATE요청 전송
+    //  서버에 UPDATE 요청 전송
 
     try {
       const response = await fetch(`${apiUrl}/${id}`, {
         method: "PUT",
         headers: {
-          "content-Type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedItem),
       });
@@ -113,7 +124,7 @@ function App() {
       fetchItems();
     } catch (err) {
       console.error(err);
-      setError(err.massage);
+      setError(err.message);
     }
   };
 
@@ -121,7 +132,7 @@ function App() {
   const deleteItem = async (id) => {
     // const newItemList = itemList.filter((item) => item.id !== id);
     // setItemList(newItemList);
-    // DELETE method로 요청
+    //  DELETE method로 요청
     try {
       const response = await fetch(`${apiUrl}/${id}`, {
         method: "DELETE",
@@ -129,11 +140,11 @@ function App() {
       if (!response.ok) {
         throw new Error("아이템을 삭제하지 못했습니다.");
       }
-      // 목록 갱신
+      //  목록 갱신
       fetchItems();
     } catch (err) {
       console.error(err);
-      setError(err.massage);
+      setError(err.message);
     }
   };
 
